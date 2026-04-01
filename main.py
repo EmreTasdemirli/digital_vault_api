@@ -24,6 +24,16 @@ def get_all_notes():
     """Gibt alle gespeicherten Notizen zurück."""
     return db
 
+@app.get("/notes/search", tags=["Notes"])
+def search_notes(category: str):
+    """Filtert Notizen nach einer bestimmten Kategorie."""
+    results = [n for n in db if n.category.lower() == category.lower()]
+    
+    if not results:
+        raise HTTPException(status_code=404, detail=f"Keine Notizen in der Kategorie '{category}' gefunden.")
+    
+    return results
+
 @app.post("/notes", response_model=Note, tags=["Notes"])
 def create_note(note: Note):
     """Erstellt eine neue Notiz mit einer eindeutigen ID."""
